@@ -1,0 +1,37 @@
+# flask-app.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-flask
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: todo-flask
+  template:
+    metadata:
+      labels:
+        app: todo-flask
+    spec:
+      containers:
+      - name: todo-flask
+        image: sk10945/todo-flask-app:1.0.0  # Replace with your image
+        ports:
+        - containerPort: 5000
+        env:
+        - name: MONGODB_URI
+          value: "mongodb://mongodb:27017/"
+        - name: FLASK_ENV
+          value: "production"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: todo-flask-service
+spec:
+  selector:
+    app: todo-flask
+  ports:
+  - port: 80
+    targetPort: 5000
+  type: LoadBalancer

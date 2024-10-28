@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    image: sk10945/todo-flask-app:latest
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=development
+      - PORT=5000
+      - MONGODB_URI=mongodb://mongodb:27017/
+    volumes:
+      - ./templates:/app/templates
+      - ./static:/app/static
+      - ./app.py:/app/app.py
+    depends_on:
+      - mongodb
+    networks:
+      - todo-network
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - todo-network
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  todo-network:
+    driver: bridge
