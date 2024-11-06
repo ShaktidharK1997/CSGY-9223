@@ -1,9 +1,14 @@
 # flask-app.yaml
+# Version of Kubernetes API 
 apiVersion: apps/v1
+# What kind of object
 kind: Deployment
+# data that helps you uniquely identify the object 
 metadata:
   name: todo-flask
+# desired state of the kubernetes object
 spec:
+#deployment spec
   replicas: 2
   selector:
     matchLabels:
@@ -12,7 +17,7 @@ spec:
     metadata:
       labels:
         app: todo-flask
-    spec:
+    spec: #pod spec 
       containers:
       - name: todo-flask
         image: sk10945/todo-flask-app:1.0.0  # Replace with your image
