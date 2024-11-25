@@ -6,9 +6,31 @@
 		<link rel="stylesheet" type="text/css"  href="{{ url_for('static',filename='assets/emoji.css')}}" >
 		<script src="{{ url_for('static',filename='assets/twemoji.min.js')}}"></script>  
 		<script src="{{ url_for('static',filename='assets/emoji.js')}}"></script>
+		<style>
+			.app-header {
+				background: linear-gradient(135deg, #2193b0, #6dd5ed);
+				color: white;
+				padding: 20px;
+				border-radius: 8px;
+				margin-bottom: 20px;
+				text-align: center;
+				box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+			}
+			.version-badge {
+				background-color: #4CAF50;
+				color: white;
+				padding: 5px 10px;
+				border-radius: 15px;
+				font-size: 0.8em;
+				margin-left: 10px;
+			}
+		</style>
 	</head>
 <body>
-	<h1>{{ h }}</h1>
+	<div class="app-header">
+		<h1>Task Management Dashboard <span class="version-badge">v2.0</span></h1>
+		<p>Organize, Track, and Complete Your Tasks Efficiently</p>
+	</div>
 	<ul>
 		<li><a href="/list" class="{{ a1 }}">ALL</a></li>
 		<li><a href="/" class="{{ a2 }}">Uncompleted</a></li>

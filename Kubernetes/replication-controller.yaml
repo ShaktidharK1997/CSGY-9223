@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: todo-flask-rc
+spec:
+  replicas: 2  
+  selector:
+    app: todo-flask
+  template:
+    metadata:
+      labels:
+        app: todo-flask
+    spec:
+      containers:
+      - name: todo-flask
+        image: sk10945/todo-flask-app:2.0.0 
+        ports:
+        - containerPort: 80

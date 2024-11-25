@@ -85,6 +85,11 @@ def update ():
 	task=todos.find({"_id":ObjectId(id)})
 	return render_template('update.html',tasks=task,h=heading,t=title)
 
+@app.route('/health')
+def health_check():
+  print(a)
+  return "OK", 200
+
 @app.route("/action3", methods=['POST'])
 def action3 ():
 	#Updating a Task with various references

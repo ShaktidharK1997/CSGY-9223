@@ -20,7 +20,7 @@ spec:
     spec: #pod spec 
       containers:
       - name: todo-flask
-        image: sk10945/todo-flask-app:1.0.0  # Replace with your image
+        image: sk10945/todo-flask-app:2.0.0 
         ports:
         - containerPort: 5000
         env:
