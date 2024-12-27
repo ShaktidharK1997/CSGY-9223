@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Upload System</title>
+    <!-- AWS API Gateway Generated SDK -->
+    <script src="lib/axios/dist/axios.standalone.js"></script>
+    <script src="lib/CryptoJS/rollups/hmac-sha256.js"></script>
+    <script src="lib/CryptoJS/rollups/sha256.js"></script>
+    <script src="lib/CryptoJS/components/hmac.js"></script>
+    <script src="lib/CryptoJS/components/enc-base64.js"></script>
+    <script src="lib/url-template/url-template.js"></script>
+    <script src="lib/apiGatewayCore/sigV4Client.js"></script>
+    <script src="lib/apiGatewayCore/apiGatewayClient.js"></script>
+    <script src="lib/apiGatewayCore/simpleHttpClient.js"></script>
+    <script src="lib/apiGatewayCore/utils.js"></script>
+    <script src="apigClient.js"></script>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .upload-container {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .image-preview {
+            max-width: 300px;
+            margin: 20px auto;
+        }
+        #uploadStatus {
+            margin: 10px 0;
+            padding: 10px;
+        }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>Photo Upload System</h1>
+    
+    <div class="upload-container">
+        <input type="file" id="photoInput" accept="image/*">
+        <button onclick="uploadPhoto()">Upload Photo</button>
+    </div>
+    
+    <div id="uploadStatus"></div>
+    <div id="imagePreview" class="image-preview"></div>
+
+    <script>
+        // Initialize the API Gateway client
+        var apigClient = apigClientFactory.newClient({
+            region: 'us-east-1' // Your API's region
+        });
+
+        async function uploadPhoto() {
+            const fileInput = document.getElementById('photoInput');
+            const statusDiv = document.getElementById('uploadStatus');
+            
+            if (!fileInput.files || !fileInput.files[0]) {
+                statusDiv.innerHTML = '<p class="error">Please select a file first</p>';
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = async function(e) {
+                try {
+                    // Prepare the request parameters
+                    const params = {
+                        'Content-Type': file.type
+                    };
+                    
+                    const body = {
+                        filename: file.name,
+                        filetype: file.type,
+                        file: e.target.result.split(',')[1] // base64 data
+                    };
+
+                    const additionalParams = {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    };
+
+                    // Make the API call
+                    const result = await apigClient.photosPut(params, body, additionalParams);
+                    
+                    statusDiv.innerHTML = '<p class="success">Upload successful!</p>';
+                    
+                    // Preview the image
+                    const imagePreview = document.getElementById('imagePreview');
+                    imagePreview.innerHTML = `<img src="${e.target.result}" alt="Uploaded preview" style="max-width: 100%;">`;
+                    
+                } catch (error) {
+                    console.error('Upload error:', error);
+                    statusDiv.innerHTML = `<p class="error">Upload failed: ${error.message}</p>`;
+                }
+            };
+
+            reader.onerror = function(error) {
+                console.error('File reading error:', error);
+                statusDiv.innerHTML = '<p class="error">Error reading file</p>';
+            };
+
+            // Read the file as base64
+            reader.readAsDataURL(file);
+        }
+
+        // Handle OPTIONS preflight
+        async function handleOptions() {
+            try {
+                const result = await apigClient.photosOptions({}, {}, {});
+                console.log('OPTIONS response:', result);
+            } catch (error) {
+                console.error('OPTIONS error:', error);
+            }
+        }
+
+        // Call handleOptions when page loads
+        document.addEventListener('DOMContentLoaded', handleOptions);
+    </script>
+</body>
+</html>
