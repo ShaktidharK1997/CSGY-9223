@@ -58,9 +58,15 @@ def format_recommendation(restaurant, idx):
     """
 
 def query_dynamodb(restaurant_id):
+    '''
     response = restaurauntTable.scan(
         FilterExpression=boto3.dynamodb.conditions.Attr('BusinessID').eq(restaurant_id)
     )
+    '''
+    response = restaurauntTable.query(
+        KeyConditionExpression=boto3.dynamodb.conditions.Key('BusinessID').eq(restaurant_id)
+    )
+    
     items = response['Items']
     if items:
         restaurant = random.choice(items)
